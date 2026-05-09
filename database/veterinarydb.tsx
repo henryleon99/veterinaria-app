@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite';
-const db = SQLite.openDatabaseSync('veterinaria.db');
+const db = SQLite.openDatabaseSync('veterinariaApp.db');
 
 export const initDB = () => {
   db.execAsync(`
@@ -13,7 +13,8 @@ export const initDB = () => {
       alergias TEXT,
       condicion TEXT,
       observaciones TEXT,
-      fecha TEXT
+      fecha TEXT,
+      hora TEXT
     );
   `);
 };
@@ -24,32 +25,34 @@ export const guardarRegistro = async (registro: {
   especie: string;
   edad: number;
   dueno: string;
-  vacunas?: string;
-  alergias?: string;
-  condicion?: string;
-  observaciones?: string;
-  fecha?: string;
+  vacunas: string;
+  alergias: string;
+  condicion: string;
+  observaciones: string;
+  fecha: string;
+  hora: string;
 }) => {
   await db.runAsync(
     `INSERT INTO mascotas 
-     (nombre, especie, edad, dueno, vacunas, alergias, condicion, observaciones, fecha) 
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+     (nombre, especie, edad, dueno, vacunas, alergias, condicion, observaciones, fecha, hora) 
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
     [
       registro.nombre,
       registro.especie,
       registro.edad,
       registro.dueno,
-      registro.vacunas ??"",
-      registro.alergias ??"",
-      registro.condicion ??"",
-      registro.observaciones ??"",
-      registro.fecha ??"",
+      registro.vacunas,
+      registro.alergias,
+      registro.condicion,
+      registro.observaciones,
+      registro.fecha,
+      registro.hora,
     ]
   );
 };
 
 // Obtener todos los registros
-export const obtenerRegistros = async (p0: (registros: any) => void): Promise<any[]> => {
+export const obtenerRegistros = async (): Promise<any[]> => {
   const result = await db.getAllAsync('SELECT * FROM mascotas;');
   return result;
 };
@@ -71,10 +74,11 @@ export const actualizarRegistro = async (registro: {
   condicion: string;
   observaciones: string;
   fecha: string;
+  hora: string;
 }) => {
   await db.runAsync(
     `UPDATE mascotas 
-     SET nombre=?, especie=?, edad=?, dueno=?, vacunas=?, alergias=?, condicion=?, observaciones=?, fecha=? 
+     SET nombre=?, especie=?, edad=?, dueno=?, vacunas=?, alergias=?, condicion=?, observaciones=?, fecha=?, hora=? 
      WHERE id=?;`,
     [
       registro.nombre,
@@ -86,6 +90,7 @@ export const actualizarRegistro = async (registro: {
       registro.condicion,
       registro.observaciones,
       registro.fecha,
+      registro.hora,
       registro.id,
     ]
   );

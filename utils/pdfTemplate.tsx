@@ -56,6 +56,7 @@ export const generarPlantillaPDF = (mascota: any) => {
           <p><strong>Condición:</strong> ${mascota.condicion}</p>
           <p><strong>Observaciones:</strong> ${mascota.observaciones}</p>
           <p><strong>Fecha:</strong> ${mascota.fecha}</p>
+          <p><strong>Hora:</strong> ${mascota.hora}</p>
         </div>
       </body>
     </html>

@@ -20,7 +20,7 @@ export default function HomeScreen() {
       }>
       <ThemedView style={styles.titleContainer}>
         <ThemedText style={styles.titleText}>Bienvenido a tu app veterinaria!</ThemedText>
-        <HelloWave />
+        
       </ThemedView>
 
       <Collapsible title="Paso 1: Ingresa los datos de tu mascota">
@@ -115,4 +115,5 @@ const styles = StyleSheet.create({
     aspectRatio: 7/5,
     resizeMode: 'cover',
   },
+ 
 });
