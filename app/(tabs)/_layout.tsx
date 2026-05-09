@@ -20,7 +20,7 @@ export default function TabLayout() {
         options={{
           title: 'Inicio',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} /> // 🏠 ícono de casa
+            <Ionicons name="home" size={size} color={color} /> 
           ),
         }}
       />
@@ -29,7 +29,7 @@ export default function TabLayout() {
         options={{
           title: 'Agregar datos',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="add-circle" size={size} color={color} /> // ➕ ícono de agregar
+            <Ionicons name="add-circle" size={size} color={color} /> 
           ),
         }}
       />
@@ -38,7 +38,7 @@ export default function TabLayout() {
         options={{
           title: 'Historial',
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="document-text" size={size} color={color} /> // 📄 ícono de reporte
+            <Ionicons name="document-text" size={size} color={color} /> 
           ),
         }}
       />
