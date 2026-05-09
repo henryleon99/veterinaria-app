@@ -6,6 +6,7 @@ import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
+import { Collapsible } from '@/components/ui/collapsible';
 
 export default function HomeScreen() {
   return (
@@ -13,68 +14,68 @@ export default function HomeScreen() {
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+          source={require('@/assets/images/veterinaria.jpg')}
+          style={styles.veterinariaLogo}
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
+        <ThemedText style={styles.titleText}>Bienvenido a tu app veterinaria!</ThemedText>
         <HelloWave />
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
 
+      <Collapsible title="Paso 1: Ingresa los datos de tu mascota">
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText style={styles.subtitle}>
+           El usuario comienza registrando la información principal de la mascota.
+          </ThemedText>
+           <ThemedText style={styles.listItem}>• Nombre del animal</ThemedText>
+           <ThemedText style={styles.listItem}>• Especie (perro, gato, etc.)</ThemedText>
+           <ThemedText style={styles.listItem}>• Edad aproximada</ThemedText>
+           <ThemedText style={styles.listItem}>• Nombre del dueño</ThemedText>  
+       </ThemedView>
+      </Collapsible>
+
+      <Collapsible title="Paso 2: Ingresa información médica">
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText style={styles.subtitle}>
+          Permite guardar datos clínicos relevantes para futuras consultas.</ThemedText>
         <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
+         • Vacunas aplicadas{"\n"}
+         • Alergias conocidas{"\n"}
+         • Historial de enfermedades
+       </ThemedText>
+       </ThemedView>
+      </Collapsible>
+
+
+      <Collapsible title="Paso 3: Identifica la condición actual">
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText style={styles.subtitle}>
+           El veterinario o usuario describe el motivo de la visita
+          </ThemedText>
         <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
+         • Tipo de lesion o sintoma{"\n"}
+         • Observaciones del estado físico{"\n"}
+         • Fecha de ingreso
+       </ThemedText>
+       </ThemedView>
+      </Collapsible>
+
+      <Collapsible title="Paso 4: Guardar y visualizar registro">
+        <ThemedView style={styles.stepContainer}>
+          <ThemedText style={styles.subtitle}>
+           El sistema almacena los datos y muestra en la lista de animales
+          </ThemedText>
+        <ThemedText>
+         • Confirmar información{"\n"}
+         • Guardar en la base local o nube{"\n"}
+         • Consultar en la pantalla de lista
+       </ThemedText>
+       </ThemedView>
+      </Collapsible>
+
     </ParallaxScrollView>
+  
   );
 }
 
@@ -84,15 +85,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
+  titleText: {
+    fontSize: 24,
+    fontWeight: '600',
+  },
   stepContainer: {
     gap: 8,
-    marginBottom: 8,
+    marginBottom: 12,
   },
+  subtitle: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+
+  listItem: {
+  fontSize: 16,
+  lineHeight: 22,
+},
+
   reactLogo: {
     height: 178,
-    width: 290,
+    width: 500,
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  veterinariaLogo: {
+    width: '100%',
+    aspectRatio: 7/5,
+    resizeMode: 'cover',
   },
 });
