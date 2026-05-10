@@ -46,7 +46,9 @@ export const generarPlantillaPDF = (mascota: any) => {
           <p><strong>Nombre:</strong> ${mascota.nombre}</p>
           <p><strong>Especie:</strong> ${mascota.especie}</p>
           <p><strong>Edad:</strong> ${mascota.edad}</p>
+          <p><strong>Peso:</strong> ${mascota.peso} kg</p>
           <p><strong>Dueño:</strong> ${mascota.dueno}</p>
+          <p><strong>Correo del dueño:</strong> ${mascota.correo}</p>
 
           <h2>2. Información Médica</h2>
           <p><strong>Vacunas:</strong> ${mascota.vacunas}</p>

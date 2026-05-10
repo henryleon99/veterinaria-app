@@ -24,7 +24,9 @@ export const guardarRegistro = async (registro: {
   nombre: string;
   especie: string;
   edad: number;
+  peso: number;
   dueno: string;
+  correo: string;
   vacunas: string;
   alergias: string;
   condicion: string;
@@ -34,13 +36,15 @@ export const guardarRegistro = async (registro: {
 }) => {
   await db.runAsync(
     `INSERT INTO mascotas 
-     (nombre, especie, edad, dueno, vacunas, alergias, condicion, observaciones, fecha, hora) 
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+     (nombre, especie, edad, peso, dueno, correo, vacunas, alergias, condicion, observaciones, fecha, hora) 
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
     [
       registro.nombre,
       registro.especie,
+      registro.peso,
       registro.edad,
       registro.dueno,
+      registro.correo,
       registro.vacunas,
       registro.alergias,
       registro.condicion,
@@ -68,7 +72,9 @@ export const actualizarRegistro = async (registro: {
   nombre: string;
   especie: string;
   edad: number;
+  peso: number;
   dueno: string;
+  correo: string;
   vacunas: string;
   alergias: string;
   condicion: string;
@@ -78,13 +84,15 @@ export const actualizarRegistro = async (registro: {
 }) => {
   await db.runAsync(
     `UPDATE mascotas 
-     SET nombre=?, especie=?, edad=?, dueno=?, vacunas=?, alergias=?, condicion=?, observaciones=?, fecha=?, hora=? 
+     SET nombre=?, especie=?, edad=?, peso=?, dueno=?, correo=?, vacunas=?, alergias=?, condicion=?, observaciones=?, fecha=?, hora=? 
      WHERE id=?;`,
     [
       registro.nombre,
       registro.especie,
       registro.edad,
+      registro.peso,
       registro.dueno,
+      registro.correo,
       registro.vacunas,
       registro.alergias,
       registro.condicion,
