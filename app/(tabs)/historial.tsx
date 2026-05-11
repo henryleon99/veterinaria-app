@@ -1,4 +1,4 @@
- import React, { useEffect, useState } from 'react';
+ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, FlatList, TextInput, StyleSheet, Alert, Button, Modal, TouchableOpacity } from 'react-native';
 import { obtenerRegistros, eliminarRegistro, actualizarRegistro, obtenerRegistroPorId } from '../../database/dbveterinary';
 import * as Print from "expo-print";
@@ -19,6 +19,8 @@ export default function HistorialScreen() {
 
   const [resultado, setResultado] = useState<any>(null);
   const [BusquedaId, setBusquedaId] = useState('');
+
+  const flatListRef = useRef<FlatList<any>>(null);
 
 
   const cargarRegistros = async () => {
@@ -80,14 +82,19 @@ export default function HistorialScreen() {
     } else {
       Alert.alert("No encontrado", "No se encontró ningún registro con ese ID.");
       setResultado(null);
-    }
+
+      const index = mascotas.findIndex((m) => m.id === Number(BusquedaId));
+      if (index !== -1 && flatListRef.current) {
+        flatListRef.current.scrollToIndex({ index, animated: true });
+      }
+    } 
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Historial de Mascotas</Text>
 
-      <View><SearchBar busquedaId={BusquedaId} setBusquedaId={setBusquedaId} onBuscar={handleBuscarPorId} /></View>
+      <SearchBar busquedaId={BusquedaId} setBusquedaId={setBusquedaId} onBuscar={handleBuscarPorId} />
       {resultado && (
         <View style={styles.card}>
           <Text><Text style={styles.label}>ID: </Text>{resultado.id}</Text>
@@ -98,6 +105,7 @@ export default function HistorialScreen() {
 
 
       <FlatList
+        ref={flatListRef}
         data={mascotas}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (

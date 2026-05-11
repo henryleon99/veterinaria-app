@@ -24,8 +24,11 @@ export default function TabLayout() {
           ),
         }}
       />
+
+  
+      
       <Tabs.Screen
-        name="agregar"
+        name="agregarcopy"
         options={{
           title: 'Agregar datos',
           tabBarIcon: ({ color, size }) => (
@@ -33,8 +36,11 @@ export default function TabLayout() {
           ),
         }}
       />
+
+    
+
       <Tabs.Screen
-        name="historial"
+        name="historialcopy"
         options={{
           title: 'Historial',
           tabBarIcon: ({ color, size }) => (
@@ -42,6 +48,6 @@ export default function TabLayout() {
           ),
         }}
       />
-    </Tabs>
+    </Tabs>   
   );
 }
