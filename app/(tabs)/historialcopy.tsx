@@ -137,6 +137,7 @@ export default function HistorialScreen() {
       <FlatList
         ref={flatListRef}
         data={mascotas}
+        extraData={mascotas}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.card}>
@@ -145,8 +146,8 @@ export default function HistorialScreen() {
                 <PetRegistration
                   nombre={form.nombre} setNombre={(text) => setForm({ ...form, nombre: text })}
                   especie={form.especie} setEspecie={(text) => setForm({ ...form, especie: text })}
-                  edad={form.edad.toString()} setEdad={(text) => setForm({ ...form, edad: Number(text) || 0 })}
-                  peso={form.peso.toString()} setPeso={(text) => setForm({ ...form, peso: Number(text) || 0 })}
+                  edad={form.edad.toString()} setEdad={(text) => setForm({ ...form, id: form.id, edad: parseInt(text, 10) || 0 })}
+                  peso={form.peso.toString()} setPeso={(text) => setForm({ ...form, id: form.id, peso: parseFloat(text) || 0 })}
                   dueno={form.dueno} setDueno={(text) => setForm({ ...form, dueno: text })}
                   correo={form.correo} setCorreo={(text) => setForm({ ...form, correo: text })}
                   vacunas={form.vacunas} setVacunas={(text) => setForm({ ...form, vacunas: text })}
@@ -169,13 +170,22 @@ export default function HistorialScreen() {
               <View>
                 <Text><Text style={styles.bold}>ID:</Text> {item.id}</Text>
                 <Text><Text style={styles.bold}>Nombre:</Text> {item.nombre}</Text>
+                <Text><Text style={styles.bold}>Especie:</Text> {item.especie}</Text>
+                <Text><Text style={styles.bold}>Edad:</Text> {item.edad} años</Text>
+                <Text><Text style={styles.bold}>Peso:</Text> {item.peso} kg</Text>
                 <Text><Text style={styles.bold}>Dueño:</Text> {item.dueno}</Text>
+                <Text><Text style={styles.bold}>Correo electrónico:</Text> {item.correo}</Text>
+                <Text><Text style={styles.bold}>Vacunas:</Text> {item.vacunas}</Text>
+                <Text><Text style={styles.bold}>Alergias:</Text> {item.alergias}</Text>
+                <Text><Text style={styles.bold}>Condición:</Text> {item.condicion}</Text>
+                <Text><Text style={styles.bold}>Observaciones:</Text> {item.observaciones}</Text>
                 <Text><Text style={styles.bold}>Fecha:</Text> {item.fecha}</Text>
+                <Text><Text style={styles.bold}>Hora:</Text> {item.hora}</Text>
                 
                 <View style={styles.filaBotones}>
                   <Button title="Editar" onPress={() => handleEditar(item)} />
-                  <Button title="PDF" onPress={() => generarPDF(item)} color="orange" />
-                  <Button title="Borrar" onPress={() => handleEliminar(item.id)} color="red" />
+                  <Button title=" Generar PDF" onPress={() => generarPDF(item)} />
+                  <Button title="Eliminar" onPress={() => handleEliminar(item.id)} />
                 </View>
               </View>
             )}

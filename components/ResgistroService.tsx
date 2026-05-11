@@ -8,7 +8,7 @@ import { Alert } from 'react-native';
 // Validaciones
 export const validarEdad = (edad: string): number | null => {
   const numEdad = parseInt(edad, 10);
-  if (isNaN(numEdad) || numEdad.toString() !== edad || numEdad < 0 || numEdad > 30) {
+  if (isNaN(numEdad) || numEdad < 0 || numEdad > 30) {
     Alert.alert("Edad inválida", "Por favor, ingresa solo números enteros entre 0 y 30.");
     return null;
   }
