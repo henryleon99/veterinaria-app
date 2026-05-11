@@ -1,86 +1,136 @@
-import React, { useState, useRef } from 'react';
-import {useFocusEffect} from '@react-navigation/native';
+import React, { useState, useRef, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, FlatList, StyleSheet, Alert, Button } from 'react-native';
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
-import { generarPlantillaPDF } from "../../utils/pdfTemplate"; 
+import { generarPlantillaPDF } from "../../utils/pdfTemplate";
 import SearchBar from '../../components/SearchBar';
 import PetRegistration from '../../components/PetRegistration';
-import { editarRegistro, borrarRegistro, listarRegistros, buscarRegistroPorId } from '../../components/ResgistroService';
+import { 
+  editarRegistro, 
+  borrarRegistro, 
+  listarRegistros, 
+  buscarRegistroPorId 
+} from '../../components/ResgistroService';
+
+// 1. Interfaz estricta para que TypeScript no genere errores de "id" no existe
+interface Mascota {
+  id: number;
+  nombre: string;
+  especie: string;
+  edad: number;
+  peso: number;
+  dueno: string;
+  correo: string;
+  vacunas: string;
+  alergias: string;
+  condicion: string;
+  observaciones: string;
+  fecha: string;
+  hora: string;
+}
 
 export default function HistorialScreen() {
-  const [mascotas, setMascotas] = useState<any[]>([]);
-  const [editando, setEditando] = useState<any | null>(null);
-  const [form, setForm] = useState<any>({});
+  // --- ESTADOS ---
+  const [mascotas, setMascotas] = useState<Mascota[]>([]);
+  const [editando, setEditando] = useState<number | null>(null);
+  const [form, setForm] = useState<Mascota>({} as Mascota);
+  const [resultado, setResultado] = useState<Mascota | null>(null);
+  const [BusquedaId, setBusquedaId] = useState('');
+  
   const [mostrarPicker, setMostrarPicker] = useState(false);
   const [mostrarPickerHora, setMostrarPickerHora] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  
   const especies = ["Perro", "Gato", "Conejo", "Tortuga", "Hámster"];
+  const flatListRef = useRef<FlatList<Mascota>>(null);
 
-  const [resultado, setResultado] = useState<any>(null);
-  const [BusquedaId, setBusquedaId] = useState('');
-
-  const flatListRef = useRef<FlatList<any>>(null);
-
+  // --- LÓGICA DE CARGA ---
   const cargarRegistros = async () => {
-    const registros = await listarRegistros();
-    
-    setMascotas(registros);
+    try {
+      const datos = await listarRegistros();
+      setMascotas(datos || []);
+    } catch (error) {
+      console.error("Error cargando registros:", error);
+    }
   };
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       cargarRegistros();
-  }, [])
-);
+    }, [])
+  );
 
+  // --- MANEJADORES DE EVENTOS ---
   const handleEliminar = async (id: number) => {
     await borrarRegistro(id);
     cargarRegistros();
   };
 
-  const handleEditar = (registro: any) => {
+  const handleEditar = (registro: Mascota) => {
     setEditando(registro.id);
     setForm({ ...registro });
   };
 
   const handleActualizar = async () => {
+    if (!form) return;
     await editarRegistro(form);
     setEditando(null);
     cargarRegistros();
+    Alert.alert("Éxito", "Registro actualizado correctamente.");
   };
 
-  const generarPDF = async (registro: any) => {
+  const generarPDF = async (registro: Mascota) => {
     const html = generarPlantillaPDF(registro);
     const { uri } = await Print.printToFileAsync({ html });
     await Sharing.shareAsync(uri);
   };
 
+  // --- FUNCIÓN DE BÚSQUEDA CORREGIDA ---
   const handleBuscarPorId = async () => {
-    if (!BusquedaId.trim()) return;
-    const registro = await buscarRegistroPorId(Number(BusquedaId));
-    if (registro) {
-      setResultado(registro);
-    } else {
-      Alert.alert("No encontrado", "No se encontró ningún registro con ese ID.");
+    if (!BusquedaId.trim()) {
       setResultado(null);
+      cargarRegistros();
+      return;
+    }
 
-      const index = mascotas.findIndex((m) => m.id === Number(BusquedaId));
-      if (index !== -1 && flatListRef.current) {
-        flatListRef.current.scrollToIndex({ index, animated: true });
+    try {
+      const idNumerico = Number(BusquedaId);
+      if (isNaN(idNumerico)) {
+        Alert.alert("Error", "El ID debe ser un número.");
+        return;
       }
-    } 
+
+      const registroEncontrado = await buscarRegistroPorId(idNumerico) as Mascota | null;
+
+      if (registroEncontrado && registroEncontrado.id) {
+        setMascotas([registroEncontrado]); // Filtra la lista visual
+        setResultado(registroEncontrado);  // Llena el estado de resultado
+      } else {
+        Alert.alert("No encontrado", "No existe una mascota con ese ID.");
+        setResultado(null);
+        cargarRegistros();
+      }
+    } catch (error) {
+      Alert.alert("Error", "Hubo un problema al buscar en la base de datos.");
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Historial de Mascotas</Text>
 
-      <SearchBar busquedaId={BusquedaId} setBusquedaId={setBusquedaId} onBuscar={handleBuscarPorId} />
+      <SearchBar 
+        busquedaId={BusquedaId} 
+        setBusquedaId={setBusquedaId} 
+        onBuscar={handleBuscarPorId} 
+      />
+
+      {/* Si hay un resultado de búsqueda, lo mostramos arriba */}
       {resultado && (
-        <View style={styles.card}>
-          <Text><Text style={styles.label}>ID: </Text>{resultado.id}</Text>
-          <Text><Text style={styles.label}>Nombre: </Text>{resultado.nombre}</Text>
+        <View style={styles.resultadoCaja}>
+          <Text style={styles.label}>Viendo resultado del ID: {resultado.id}</Text>
+          <Button title="Limpiar Búsqueda" onPress={() => { setResultado(null); cargarRegistros(); }} color="#666" />
         </View>
       )}
 
@@ -91,48 +141,52 @@ export default function HistorialScreen() {
         renderItem={({ item }) => (
           <View style={styles.card}>
             {editando === item.id ? (
-              <>
+              <View>
                 <PetRegistration
-                  nombre={form.nombre} setNombre={(text) => setForm((prev: any) => ({ ...prev, nombre: text }))}
-                  especie={form.especie} setEspecie={(text) => setForm((prev: any) => ({ ...prev, especie: text }))}
-                  edad={form.edad} setEdad={(text) => setForm((prev: any) => ({ ...prev, edad: text }))}
-                  peso={form.peso} setPeso={(text) => setForm((prev: any) => ({ ...prev, peso: text }))}
-                  dueno={form.dueno} setDueno={(text) => setForm((prev: any) => ({ ...prev, dueno: text }))}
-                  correo={form.correo} setCorreo={(text) => setForm((prev: any) => ({ ...prev, correo: text }))}
-                  vacunas={form.vacunas} setVacunas={(text) => setForm((prev: any) => ({ ...prev, vacunas: text }))}
-                  alergias={form.alergias} setAlergias={(text) => setForm((prev: any) => ({ ...prev, alergias: text }))}
-                  condicion={form.condicion} setCondicion={(text) => setForm((prev: any) => ({ ...prev, condicion: text }))}
-                  observaciones={form.observaciones} setObservaciones={(text) => setForm((prev: any) => ({ ...prev, observaciones: text }))}
-                  fecha={form.fecha} setFecha={(text) => setForm((prev: any) => ({ ...prev, fecha: text }))}
-                  hora={form.hora} setHora={(text) => setForm((prev: any) => ({ ...prev, hora: text }))}
+                  nombre={form.nombre} setNombre={(text) => setForm({ ...form, nombre: text })}
+                  especie={form.especie} setEspecie={(text) => setForm({ ...form, especie: text })}
+                  edad={form.edad.toString()} setEdad={(text) => setForm({ ...form, edad: Number(text) || 0 })}
+                  peso={form.peso.toString()} setPeso={(text) => setForm({ ...form, peso: Number(text) || 0 })}
+                  dueno={form.dueno} setDueno={(text) => setForm({ ...form, dueno: text })}
+                  correo={form.correo} setCorreo={(text) => setForm({ ...form, correo: text })}
+                  vacunas={form.vacunas} setVacunas={(text) => setForm({ ...form, vacunas: text })}
+                  alergias={form.alergias} setAlergias={(text) => setForm({ ...form, alergias: text })}
+                  condicion={form.condicion} setCondicion={(text) => setForm({ ...form, condicion: text })}
+                  observaciones={form.observaciones} setObservaciones={(text) => setForm({ ...form, observaciones: text })}
+                  fecha={form.fecha} setFecha={(text) => setForm({ ...form, fecha: text })}
+                  hora={form.hora} setHora={(text) => setForm({ ...form, hora: text })}
                   mostrarPicker={mostrarPicker} setMostrarPicker={setMostrarPicker}
                   mostrarPickerHora={mostrarPickerHora} setMostrarPickerHora={setMostrarPickerHora}
                   modalVisible={modalVisible} setModalVisible={setModalVisible}
                   especies={especies}
                 />
-
-                <Button title="Guardar cambios" onPress={handleActualizar} />
-                <Button title="Cancelar" onPress={() => setEditando(null)} />
-              </>
+                <View style={styles.filaBotones}>
+                  <Button title="Guardar" onPress={handleActualizar} color="green" />
+                  <Button title="Cancelar" onPress={() => setEditando(null)} color="red" />
+                </View>
+              </View>
             ) : (
-              <>
-                <Text><Text style={styles.label}>ID: </Text>{item.id}</Text>
-                <Text><Text style={styles.label}>Nombre: </Text>{item.nombre}</Text>
-                <Text><Text style={styles.label}>Especie: </Text>{item.especie}</Text>
-                <Text><Text style={styles.label}>Edad: </Text>{item.edad}</Text>
-                <Text><Text style={styles.label}>Peso: </Text>{item.peso} kg</Text>
-                <Text><Text style={styles.label}>Dueño: </Text>{item.dueno}</Text>
-                <Text><Text style={styles.label}>Correo del dueño: </Text>{item.correo}</Text>
-                <Text><Text style={styles.label}>Vacunas: </Text>{item.vacunas}</Text>
-                <Text><Text style={styles.label}>Alergias: </Text>{item.alergias}</Text>
-                <Text><Text style={styles.label}>Condición: </Text>{item.condicion}</Text>
-                <Text><Text style={styles.label}>Observaciones: </Text>{item.observaciones}</Text>
-                <Text><Text style={styles.label}>Fecha: </Text>{item.fecha}</Text>
-                <Text><Text style={styles.label}>Hora: </Text>{item.hora}</Text>
-                <Button title="Editar" onPress={() => handleEditar(item)} />
-                <Button title="Eliminar" onPress={() => handleEliminar(item.id)} />
-                <Button title="Generar PDF" onPress={() => generarPDF(item)} /> 
-              </>
+              <View>
+                <Text><Text style={styles.bold}>ID:</Text> {item.id}</Text>
+                <Text><Text style={styles.bold}>Nombre:</Text> {item.nombre}</Text>
+                <Text><Text style={styles.bold}>Especie:</Text> {item.especie}</Text>
+                <Text><Text style={styles.bold}>Edad:</Text> {item.edad} años</Text>
+                <Text><Text style={styles.bold}>Peso:</Text> {item.peso} kg</Text>
+                <Text><Text style={styles.bold}>Dueño:</Text> {item.dueno}</Text>
+                <Text><Text style={styles.bold}>Correo electrónico:</Text> {item.correo}</Text>
+                <Text><Text style={styles.bold}>Vacunas:</Text> {item.vacunas}</Text>
+                <Text><Text style={styles.bold}>Alergias:</Text> {item.alergias}</Text>
+                <Text><Text style={styles.bold}>Condición:</Text> {item.condicion}</Text>
+                <Text><Text style={styles.bold}>Observaciones:</Text> {item.observaciones}</Text>
+                <Text><Text style={styles.bold}>Fecha:</Text> {item.fecha}</Text>
+                <Text><Text style={styles.bold}>Hora:</Text> {item.hora}</Text>
+                
+                <View style={styles.filaBotones}>
+                  <Button title="Editar" onPress={() => handleEditar(item)} />
+                  <Button title=" Generar PDF" onPress={() => generarPDF(item)} />
+                  <Button title="Eliminar" onPress={() => handleEliminar(item.id)} />
+                </View>
+              </View>
             )}
           </View>
         )}
@@ -142,8 +196,19 @@ export default function HistorialScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  titulo: { fontSize: 20, fontWeight: 'bold', marginBottom: 10, textAlign: 'center', marginTop: 20 },
-  card: { padding: 10, borderWidth: 1, borderColor: '#ccc', marginBottom: 10, borderRadius: 5 },
-  label: { fontWeight: 'bold', marginRight: 8, width: 100 }, 
+  container: { flex: 1, padding: 20, backgroundColor: '#fff' },
+  titulo: { fontSize: 22, fontWeight: 'bold', marginBottom: 15, textAlign: 'center', marginTop: 30 },
+  card: { 
+    padding: 15, 
+    borderWidth: 1, 
+    borderColor: '#eee', 
+    marginBottom: 12, 
+    borderRadius: 8,
+    backgroundColor: '#fafafa',
+    elevation: 2
+  },
+  bold: { fontWeight: 'bold' },
+  label: { marginBottom: 5, color: '#444' },
+  resultadoCaja: { padding: 10, backgroundColor: '#e8f4fd', marginBottom: 10, borderRadius: 5 },
+  filaBotones: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }
 });
