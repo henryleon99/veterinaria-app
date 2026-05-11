@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
+import {useFocusEffect} from '@react-navigation/native';
 import { View, Text, FlatList, StyleSheet, Alert, Button } from 'react-native';
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
@@ -23,12 +24,15 @@ export default function HistorialScreen() {
 
   const cargarRegistros = async () => {
     const registros = await listarRegistros();
+    
     setMascotas(registros);
   };
 
-  useEffect(() => {
-    cargarRegistros();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      cargarRegistros();
+  }, [])
+);
 
   const handleEliminar = async (id: number) => {
     await borrarRegistro(id);

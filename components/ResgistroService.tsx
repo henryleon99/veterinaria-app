@@ -54,7 +54,8 @@ export const borrarRegistro = async (id: number) => {
 
 // Obtener todos los registros
 export const listarRegistros = async () => {
-  return await obtenerRegistros();
+  const Registros = await obtenerRegistros();
+  return Registros.sort((a, b) => b.id - a.id); // Ordenar por ID descendente
 };
 
 // Buscar por ID

@@ -121,7 +121,7 @@ const FormularioMascota: React.FC<Props> = (props) => {
           onChange={(_, selectedTime) => {
             setMostrarPickerHora(false);
             if (selectedTime) {
-              setHora(selectedTime.toISOString().split('T')[1].slice(0, 5));
+              setHora(selectedTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
             }
           }}
         />
