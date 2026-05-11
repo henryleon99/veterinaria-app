@@ -33,10 +33,12 @@ export const crearRegistro = async (form: any) => {
 
   await guardarRegistro({ ...form, edad: numEdad, peso: numPeso });
   Alert.alert("Registro guardado", "La información de la mascota ha sido guardada exitosamente.");
+  console.log(`Registro con ID ${form.id} creado`);
 };
 
 // Actualizar registro existente
 export const editarRegistro = async (form: any) => {
+  console.log("Actualizando registro con datos:", form);
   const numEdad = validarEdad(form.edad);
   const numPeso = validarPeso(form.peso);
 
@@ -44,17 +46,20 @@ export const editarRegistro = async (form: any) => {
 
   await actualizarRegistro({ ...form, edad: numEdad, peso: numPeso });
   Alert.alert("Registro actualizado", "La información de la mascota ha sido actualizada exitosamente.");
+  console.log(`Registro con ID ${form.id} actualizado`);
 };
 
 // Eliminar registro
 export const borrarRegistro = async (id: number) => {
   await eliminarRegistro(id);
   Alert.alert("Registro eliminado", "La información de la mascota ha sido eliminada exitosamente.");
+  console.log(`Registro con ID ${id} eliminado`);
 };
 
 // Obtener todos los registros
 export const listarRegistros = async () => {
   const Registros = await obtenerRegistros();
+  console.log("Registros obtenidos:", Registros);
   return Registros.sort((a, b) => b.id - a.id); // Ordenar por ID descendente
 };
 

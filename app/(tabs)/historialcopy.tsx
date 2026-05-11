@@ -169,22 +169,13 @@ export default function HistorialScreen() {
               <View>
                 <Text><Text style={styles.bold}>ID:</Text> {item.id}</Text>
                 <Text><Text style={styles.bold}>Nombre:</Text> {item.nombre}</Text>
-                <Text><Text style={styles.bold}>Especie:</Text> {item.especie}</Text>
-                <Text><Text style={styles.bold}>Edad:</Text> {item.edad} años</Text>
-                <Text><Text style={styles.bold}>Peso:</Text> {item.peso} kg</Text>
                 <Text><Text style={styles.bold}>Dueño:</Text> {item.dueno}</Text>
-                <Text><Text style={styles.bold}>Correo electrónico:</Text> {item.correo}</Text>
-                <Text><Text style={styles.bold}>Vacunas:</Text> {item.vacunas}</Text>
-                <Text><Text style={styles.bold}>Alergias:</Text> {item.alergias}</Text>
-                <Text><Text style={styles.bold}>Condición:</Text> {item.condicion}</Text>
-                <Text><Text style={styles.bold}>Observaciones:</Text> {item.observaciones}</Text>
                 <Text><Text style={styles.bold}>Fecha:</Text> {item.fecha}</Text>
-                <Text><Text style={styles.bold}>Hora:</Text> {item.hora}</Text>
                 
                 <View style={styles.filaBotones}>
                   <Button title="Editar" onPress={() => handleEditar(item)} />
-                  <Button title=" Generar PDF" onPress={() => generarPDF(item)} />
-                  <Button title="Eliminar" onPress={() => handleEliminar(item.id)} />
+                  <Button title="PDF" onPress={() => generarPDF(item)} color="orange" />
+                  <Button title="Borrar" onPress={() => handleEliminar(item.id)} color="red" />
                 </View>
               </View>
             )}
