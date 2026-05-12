@@ -183,9 +183,9 @@ export default function HistorialScreen() {
                 <Text><Text style={styles.bold}>Hora:</Text> {item.hora}</Text>
                 
                 <View style={styles.filaBotones}>
-                  <Button title="Editar" onPress={() => handleEditar(item)} />
-                  <Button title=" Generar PDF" onPress={() => generarPDF(item)} />
-                  <Button title="Eliminar" onPress={() => handleEliminar(item.id)} />
+                  <Button title="Editar" color="#4CAF50" onPress={() => handleEditar(item)} />
+                  <Button title=" Generar PDF" color="#00BCD4" onPress={() => generarPDF(item)} />
+                  <Button title="Eliminar" color="#F44336" onPress={() => handleEliminar(item.id)} />
                 </View>
               </View>
             )}

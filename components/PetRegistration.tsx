@@ -49,11 +49,11 @@ const FormularioMascota: React.FC<Props> = (props) => {
 
   return (
     <View>
-      <TextInput style={styles.input} placeholder="Nombre del animal" value={nombre} onChangeText={setNombre} />
+      <TextInput style={styles.input} placeholder="Nombre del animal" placeholderTextColor="#9e9797" value={nombre} onChangeText={setNombre} />
 
       {/* Especie con Modal */}
       <TouchableOpacity style={styles.input} onPress={() => setModalVisible(true)}>
-        <Text>{especie || "Selecciona especie..."}</Text>
+        <Text style={!especie ? styles.placeholderText : styles.normalText}>{especie || "Selecciona la especie de tu mascota"}</Text>
       </TouchableOpacity>
 
       <Modal visible={modalVisible} transparent={true} animationType="slide">
@@ -76,22 +76,22 @@ const FormularioMascota: React.FC<Props> = (props) => {
         </View>
       </Modal>
 
-      <TextInput style={styles.input} placeholder="Edad aproximada" value={edad} keyboardType="numeric" onChangeText={(text) =>{
+      <TextInput style={styles.input} placeholder="Edad aproximada" placeholderTextColor="#9e9797" value={edad} keyboardType="numeric" onChangeText={(text) =>{
         const soloEnteros = text.replace(/[^0-9]/g, '');
         setEdad(soloEnteros);
       }} />
-      <TextInput style={styles.input} placeholder="Peso (kg)" value={peso} keyboardType="decimal-pad" onChangeText={setPeso} />
-      <TextInput style={styles.input} placeholder="Nombre del dueño" value={dueno} onChangeText={setDueno} />
-      <TextInput style={styles.input} placeholder="Correo del dueño" value={correo} onChangeText={setCorreo} keyboardType="email-address" />
+      <TextInput style={styles.input} placeholder="Peso (kg)" placeholderTextColor="#9e9797" value={peso} keyboardType="decimal-pad" onChangeText={setPeso} />
+      <TextInput style={styles.input} placeholder="Nombre del dueño" placeholderTextColor="#9e9797" value={dueno} onChangeText={setDueno} />
+      <TextInput style={styles.input} placeholder="Correo del dueño" placeholderTextColor="#9e9797" value={correo} onChangeText={setCorreo} keyboardType="email-address" />
 
-      <TextInput style={styles.input} placeholder="Tipo de vacunas aplicadas" value={vacunas} onChangeText={setVacunas} />
-      <TextInput style={styles.input} placeholder="Alergias conocidas" value={alergias} onChangeText={setAlergias} />
-      <TextInput style={styles.input} placeholder="Condición actual" value={condicion} onChangeText={setCondicion} />
-      <TextInput style={styles.input} placeholder="Observaciones" value={observaciones} onChangeText={setObservaciones} />
+      <TextInput style={styles.input} placeholder="Tipo de vacunas aplicadas" placeholderTextColor="#9e9797" value={vacunas} onChangeText={setVacunas} />
+      <TextInput style={styles.input} placeholder="Alergias conocidas" placeholderTextColor="#9e9797" value={alergias} onChangeText={setAlergias} />
+      <TextInput style={styles.input} placeholder="Condición actual" placeholderTextColor="#9e9797" value={condicion} onChangeText={setCondicion} />
+      <TextInput style={styles.input} placeholder="Observaciones" placeholderTextColor="#9e9797" value={observaciones} onChangeText={setObservaciones} />
 
       {/* Fecha */}
       <View style={styles.row}>
-        <TextInput style={[styles.input, { flex: 1 }]} placeholder="Fecha de ingreso" value={fecha} editable={false} />
+        <TextInput style={[styles.input, { flex: 1 }]} placeholder="Fecha de ingreso" placeholderTextColor="#9e9797" value={fecha} editable={false} />
         <Ionicons name="calendar" size={28} color="gray" onPress={() => setMostrarPicker(true)} style={styles.icon} />
       </View>
       {mostrarPicker && (
@@ -110,7 +110,7 @@ const FormularioMascota: React.FC<Props> = (props) => {
 
       {/* Hora */}
       <View style={styles.row}>
-        <TextInput style={[styles.input, { flex: 1 }]} placeholder="Hora de ingreso" value={hora} editable={false} />
+        <TextInput style={[styles.input, { flex: 1 }]} placeholder="Hora de ingreso" placeholderTextColor="#9e9797" value={hora} editable={false} />
         <Ionicons name="time" size={28} color="gray" onPress={() => setMostrarPickerHora(true)} style={styles.icon} />
       </View>
       {mostrarPickerHora && (
@@ -131,11 +131,13 @@ const FormularioMascota: React.FC<Props> = (props) => {
 };
 
 const styles = StyleSheet.create({
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 10, borderRadius: 5 },
+  input: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 10, borderRadius: 5, color: '#010000' },
+  placeholderText: { color: '#9e9797' },
+  normalText: { color: '#010000' },
   row: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
   icon: { marginLeft: 10 },
   modalOverlay: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.3)' },
-  modalContent: { backgroundColor: '#fff', padding: 20, borderRadius: 10, width: '80%' },
+  modalContent: { backgroundColor: '#fff', padding: 20, borderRadius: 10, width: '80%', },
   option: { padding: 10, borderBottomWidth: 1, borderBottomColor: '#ccc' },
 });
 

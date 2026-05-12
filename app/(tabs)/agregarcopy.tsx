@@ -25,6 +25,11 @@ export default function RegistroScreen() {
     initDB();
   }, []);
 
+  const validarEmail = (email: string) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
   const handleGuardar = () => {
     if (!nombre.trim() || !especie.trim() || !edad.trim() || !peso.trim() || !dueno.trim() || !correo.trim() || !condicion.trim() || !fecha.trim() || !hora.trim()) {
       Alert.alert("Campos incompletos", "Por favor, completa todos los campos obligatorios.");
@@ -40,6 +45,11 @@ export default function RegistroScreen() {
     const numPeso = parseFloat(peso);
     if (isNaN(numPeso) || numPeso < 0 || numPeso > 200) {
       Alert.alert("Peso inválido", "Por favor, ingresa un peso válido (0-200 kg).");
+      return;
+    }
+
+    if (!validarEmail(correo)) {
+      Alert.alert("Correo electrónico inválido", "Por favor, ingresa un correo electrónico válido.");
       return;
     }
 
