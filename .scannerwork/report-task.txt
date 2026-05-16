@@ -1,0 +1,6 @@
+projectKey=veterinaria-app
+serverUrl=http://localhost:9000
+serverVersion=26.5.0.122743
+dashboardUrl=http://localhost:9000/dashboard?id=veterinaria-app
+ceTaskId=10c3db74-ca0a-40ba-a2bf-e94e052c43f5
+ceTaskUrl=http://localhost:9000/api/ce/task?id=10c3db74-ca0a-40ba-a2bf-e94e052c43f5
